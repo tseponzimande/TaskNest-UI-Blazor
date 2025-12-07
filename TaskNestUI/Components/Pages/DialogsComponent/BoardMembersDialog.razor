@@ -1,0 +1,51 @@
+﻿<RadzenFieldset Style="padding:16px; min-width:600px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Board Members</h4>
+        <RadzenButton Text="Add User" Icon="person_add" Click="@OpenAddUserDialog"
+                      ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" />
+    </div>
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="@ProgressBarMode.Indeterminate" />
+    }
+    else if (!boardUsers.Any())
+    {
+        <p class="text-muted">No members found.</p>
+    }
+    else
+    {
+        <RadzenDataGrid Data="@boardUsers" TItem="BoardUserDto" AllowSorting="true"
+                        ColumnWidth="150px" Style="height:400px">
+            <Columns>
+                <RadzenDataGridColumn TItem="BoardUserDto" Property="UserEmail" Title="Email" Width="250px" />
+                <RadzenDataGridColumn TItem="BoardUserDto" Property="Role" Title="Role" Width="150px">
+                    <Template Context="user">
+                        <RadzenDropDown @bind-Value="user.Role" Data="@roles"
+                                        Change="@((args) => UpdateRole(user, args))"
+                                        Style="width:100%" Disabled="@(user.Role == BoardUserRole.Admin && IsLastAdmin(user))" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="BoardUserDto" Title="Actions" Width="100px" Sortable="false">
+                    <Template Context="user">
+                        <RadzenButton Size="ButtonSize.Small" Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                                      Click="@(() => ConfirmRemoveUser(user))"
+                                      Disabled="@(user.Role == BoardUserRole.Admin && IsLastAdmin(user))"
+                                      title="Remove User" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+
+        @if (boardUsers.Count(u => u.Role == BoardUserRole.Admin) == 1)
+        {
+            <small class="text-muted" style="display:block; margin-top:10px;">
+                * Cannot remove or change role of the last admin
+            </small>
+        }
+    }
+
+    <div class="d-flex justify-content-end" style="margin-top:1rem;">
+        <RadzenButton Text="Close" ButtonStyle="ButtonStyle.Secondary" Click="@Close" />
+    </div>
+</RadzenFieldset>

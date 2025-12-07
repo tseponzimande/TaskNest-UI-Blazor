@@ -1,0 +1,29 @@
+﻿<EditForm Model="model" OnValidSubmit="@Submit">
+    <RadzenFieldset Style="padding:16px;">
+        <h4>Add User to Board</h4>
+
+        <div class="mb-3">
+            <label class="form-label">User Email *</label>
+            <RadzenTextBox @bind-Value="model.UserEmail" Placeholder="user@example.com" Style="width:100%" />
+            @if (showEmailError)
+            {
+                <div class="text-danger">@errorMessage</div>
+            }
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Role *</label>
+            <RadzenDropDown @bind-Value="model.Role" Data="@roles" Style="width:100%" />
+            <small class="text-muted">
+                <strong>Viewer:</strong> Can view only<br />
+                <strong>Editor:</strong> Can view and edit<br />
+                <strong>Admin:</strong> Full control (add/remove users, delete board)
+            </small>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <RadzenButton Text="Cancel" ButtonStyle="ButtonStyle.Secondary" Click="@Cancel" Style="margin-right:8px;" />
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Add User" Icon="person_add" Disabled="@isSubmitting" />
+        </div>
+    </RadzenFieldset>
+</EditForm>

@@ -1,0 +1,19 @@
+﻿<RadzenFieldset Style="padding:16px;">
+    <h4>Edit Roles for @User?.Email</h4>
+
+    <div class="mb-3">
+        <label class="form-label">Select Roles</label>
+        @foreach (var role in availableRoles)
+        {
+            <div style="margin-bottom:8px;">
+                <RadzenCheckBox @bind-Value="@selectedRoles[role]" Name="@role" />
+                <RadzenLabel Text="@role" Component="@role" Style="margin-left:8px;" />
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <RadzenButton Text="Cancel" ButtonStyle="ButtonStyle.Secondary" Click="@Cancel" Style="margin-right:8px;" />
+        <RadzenButton Text="Save" Icon="save" Click="@Save" />
+    </div>
+</RadzenFieldset>

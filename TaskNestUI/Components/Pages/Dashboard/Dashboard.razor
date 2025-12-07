@@ -1,0 +1,200 @@
+﻿@page "/dashboard"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>Dashboard</PageTitle>
+
+@if (isLoading)
+{
+    <RadzenProgressBar Mode="@ProgressBarMode.Indeterminate" />
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <h3>Welcome back, @userName!</h3>
+            <p class="text-muted">Here's what's happening with your projects</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <RadzenCard Style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; height:140px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2 style="margin:0;">@stats.MyTasks</h2>
+                        <p style="margin:0; opacity:0.9;">My Tasks</p>
+                    </div>
+                    <RadzenIcon Icon="task" Style="font-size:3rem; opacity:0.7;" />
+                </div>
+            </RadzenCard>
+        </div>
+
+        <div class="col-md-3">
+            <RadzenCard Style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; height:140px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2 style="margin:0;">@stats.OverdueTasks</h2>
+                        <p style="margin:0; opacity:0.9;">Overdue</p>
+                    </div>
+                    <RadzenIcon Icon="warning" Style="font-size:3rem; opacity:0.7;" />
+                </div>
+            </RadzenCard>
+        </div>
+
+        <div class="col-md-3">
+            <RadzenCard Style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; height:140px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2 style="margin:0;">@stats.MyBoards</h2>
+                        <p style="margin:0; opacity:0.9;">My Boards</p>
+                    </div>
+                    <RadzenIcon Icon="view_module" Style="font-size:3rem; opacity:0.7;" />
+                </div>
+            </RadzenCard>
+        </div>
+
+        <div class="col-md-3">
+            <RadzenCard Style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; height:140px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2 style="margin:0;">@stats.CompletedTasks</h2>
+                        <p style="margin:0; opacity:0.9;">Completed</p>
+                    </div>
+                    <RadzenIcon Icon="check_circle" Style="font-size:3rem; opacity:0.7;" />
+                </div>
+            </RadzenCard>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+            <RadzenCard>
+                <h5>Tasks by Status</h5>
+                @if (tasksByStatus.Any())
+                {
+                    <RadzenChart>
+                        <RadzenPieSeries Data="@tasksByStatus" Title="Status" CategoryProperty="Status" ValueProperty="Count">
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </RadzenPieSeries>
+                    </RadzenChart>
+                }
+                else
+                {
+                    <p class="text-muted text-center" style="padding:2rem;">No data available</p>
+                }
+            </RadzenCard>
+        </div>
+
+        <div class="col-md-6">
+            <RadzenCard>
+                <h5>Task Trend (Last 7 Days)</h5>
+                @if (taskTrend.Any())
+                {
+                    <RadzenChart>
+                        <RadzenLineSeries Data="@taskTrend" CategoryProperty="Date" Title="Created" ValueProperty="Created" Stroke="#667eea" Smooth="true">
+                            <RadzenMarkers MarkerType="MarkerType.Circle" />
+                            <RadzenSeriesDataLabels Visible="false" />
+                        </RadzenLineSeries>
+                        <RadzenLineSeries Data="@taskTrend" CategoryProperty="Date" Title="Completed" ValueProperty="Completed" Stroke="#43e97b" Smooth="true">
+                            <RadzenMarkers MarkerType="MarkerType.Circle" />
+                            <RadzenSeriesDataLabels Visible="false" />
+                        </RadzenLineSeries>
+                        <RadzenCategoryAxis>
+                            <RadzenGridLines Visible="true" />
+                        </RadzenCategoryAxis>
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true" />
+                        </RadzenValueAxis>
+                    </RadzenChart>
+                }
+                else
+                {
+                    <p class="text-muted text-center" style="padding:2rem;">No data available</p>
+                }
+            </RadzenCard>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+            <RadzenCard>
+                <h5>Board Overview</h5>
+                @if (boardStats.Any())
+                {
+                    <RadzenChart>
+                        <RadzenColumnSeries Data="@boardStats" CategoryProperty="BoardName" Title="Total Tasks" ValueProperty="TaskCount" Fill="#667eea" />
+                        <RadzenColumnSeries Data="@boardStats" CategoryProperty="BoardName" Title="Completed" ValueProperty="CompletedTasks" Fill="#43e97b" />
+                        <RadzenCategoryAxis>
+                            <RadzenGridLines Visible="true" />
+                        </RadzenCategoryAxis>
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true" />
+                        </RadzenValueAxis>
+                        <RadzenLegend Position="LegendPosition.Top" />
+                    </RadzenChart>
+                }
+                else
+                {
+                    <p class="text-muted text-center" style="padding:2rem;">No boards found</p>
+                }
+            </RadzenCard>
+        </div>
+
+
+        <div class="col-md-6">
+            <RadzenCard Style="height:100%;">
+                <h5>Recent Activity</h5>
+                @if (recentActivity.Any())
+                {
+                    <div style="max-height:350px; overflow-y:auto;">
+                        @foreach (var activity in recentActivity.Take(8))
+                        {
+                            <div style="padding:10px; border-bottom:1px solid #eee; display:flex; align-items:start;">
+                                <RadzenIcon Icon="@GetActivityIcon(activity.Action)"
+                                            Style="@($"margin-right:10px; color:{GetActivityColor(activity.Action)}; font-size:1.5rem;")" />
+
+                                <div style="flex:1;">
+                                    <strong>@activity.Action</strong>
+                                    <p style="margin:0; color:#666; font-size:0.9rem;">@activity.Description</p>
+                                    <small style="color:#999;">
+                                        @activity.UserEmail • @GetRelativeTime(activity.Timestamp)
+                                        @if (!string.IsNullOrEmpty(activity.BoardName))
+                                        {
+                                            <span> • @activity.BoardName</span>
+                                        }
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center" style="padding:2rem;">No recent activity</p>
+                }
+            </RadzenCard>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <RadzenCard>
+                <h5>Quick Actions</h5>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+
+                    <RadzenButton Text="View All Boards" Icon="view_module" Click="@(() => _navigationManager.NavigateTo("/boards"))" />
+
+                    <RadzenButton Text="Create New Board" Icon="add" ButtonStyle="ButtonStyle.Success" Click="@OpenCreateBoardDialog" />
+
+                    <RadzenButton Text="My Tasks" Icon="task" ButtonStyle="ButtonStyle.Info" Click="@GoToMyTasks" />
+
+                    <RadzenButton Text="Refresh Data" Icon="refresh" ButtonStyle="ButtonStyle.Light" Click="@LoadDashboardData" />
+
+                </div>
+            </RadzenCard>
+        </div>
+    </div>
+}

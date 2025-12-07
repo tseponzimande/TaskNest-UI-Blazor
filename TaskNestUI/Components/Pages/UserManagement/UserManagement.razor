@@ -1,0 +1,117 @@
+﻿@page "/admin/users"
+
+<PageTitle> User Management </PageTitle>
+
+<RadzenCard>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>User Management</h3>
+        <RadzenButton Icon="refresh" Text="Refresh" Click="@LoadUsers" ButtonStyle="ButtonStyle.Light" />
+    </div>
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="@ProgressBarMode.Indeterminate" />
+    }
+    else if (!users.Any())
+    {
+        <p class="text-muted">No users found.</p>
+    }
+    else
+    {
+        <RadzenDataGrid Data="@users" TItem="UserManagementDtos" AllowFiltering="true" AllowSorting="true"
+                        AllowPaging="true" PageSize="10" ShowPagingSummary="true" FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="UserManagementDtos" Property="Email" Title="Email" Width="200px">
+                    <Template Context="user">
+                        <div>
+                            @user.Email
+                            @if (!user.EmailConfirmed)
+                            {
+                                <RadzenBadge Text="Unverified" BadgeStyle="BadgeStyle.Warning" Style="margin-left:5px;" />
+                            }
+                        </div>
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="UserManagementDtos" Property="IsEnabled" Title="Status" Width="120px">
+                    <Template Context="user">
+                        @if (user.IsEnabled)
+                        {
+                            <RadzenBadge Text="Enabled" BadgeStyle="BadgeStyle.Success" />
+                        }
+                        else
+                        {
+                            <RadzenBadge Text="Disabled" BadgeStyle="BadgeStyle.Danger" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="UserManagementDtos" Property="Roles" Title="Roles" Width="150px">
+                    <Template Context="user">
+                        @if (user.Roles.Any())
+                        {
+                            @foreach (var role in user.Roles)
+                            {
+                                <RadzenBadge Text="@role" BadgeStyle="BadgeStyle.Info" Style="margin-right:3px;" />
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">No roles</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="UserManagementDtos" Property="BoardCount" Title="Boards" Width="80px" />
+
+                <RadzenDataGridColumn TItem="UserManagementDtos" Property="CreatedAt" Title="Joined" Width="120px">
+                    <Template Context="user">
+                        @user.CreatedAt.ToString("MMM dd, yyyy")
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="UserManagementDtos" Property="LastLoginAt" Title="Last Login" Width="120px">
+                    <Template Context="user">
+                        @if (user.LastLoginAt.HasValue)
+                        {
+                            @GetRelativeTime(user.LastLoginAt.Value)
+                        }
+                        else
+                        {
+                            <span class="text-muted">Never</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="UserManagementDtos" Title="Actions" Width="200px" Sortable="false" Filterable="false">
+                    <Template Context="user">
+                        @if (user.IsEnabled)
+                        {
+                            <RadzenButton Size="ButtonSize.Small" Icon="block" Text="Disable"
+                                          ButtonStyle="ButtonStyle.Warning"
+                                          Click="@(() => ConfirmToggleStatus(user, false))"
+                                          Style="margin-right:5px;" />
+                        }
+                        else
+                        {
+                            <RadzenButton Size="ButtonSize.Small" Icon="check_circle" Text="Enable"
+                                          ButtonStyle="ButtonStyle.Success"
+                                          Click="@(() => ConfirmToggleStatus(user, true))"
+                                          Style="margin-right:5px;" />
+                        }
+
+                        <RadzenButton Size="ButtonSize.Small" Icon="edit"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Click="@(() => OpenEditRolesDialog(user))"
+                                      Style="margin-right:5px;" title="Edit Roles" />
+
+                        <RadzenButton Size="ButtonSize.Small" Icon="delete"
+                                      ButtonStyle="ButtonStyle.Danger"
+                                      Click="@(() => ConfirmDeleteUser(user))"
+                                      title="Delete User" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</RadzenCard>

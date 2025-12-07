@@ -1,0 +1,32 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+
+<div class="rz-p-2">
+    @if (isAuthenticated)
+    {
+        <RadzenPanelMenu Multiple="@multiple">
+            <!-- Common menu items for all authenticated users -->
+            <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" Path="@dashboardPath" />
+            <RadzenPanelMenuItem Text="Boards" Icon="view_module" Path="/boards" />
+            <RadzenPanelMenuItem Text="My Tasks" Icon="task" Path="/my-tasks" />
+            <RadzenPanelMenuItem Text="Change Password" Path="/change-password" Icon="lock" />
+
+            <!-- Admin-only menu items -->
+            @if (isAdmin)
+            {
+                <RadzenPanelMenuItem Text="Admin Dashboard" Icon="admin_panel_settings" Path="/admin/dashboard" />
+                <RadzenPanelMenuItem Text="User Management" Path="/admin/users" Icon="people" />
+                <RadzenPanelMenuItem Text="System Reports" Path="/admin/reports" Icon="assessment" />
+            }
+
+            <RadzenPanelMenuItem Text="Logout" Icon="logout" Click="@Logout" />
+        </RadzenPanelMenu>
+    }
+    else
+    {
+        <RadzenPanelMenu Multiple="false">
+            <RadzenPanelMenuItem Text="Login" Icon="login" Path="/login" />
+            <RadzenPanelMenuItem Text="Register" Icon="person_add" Path="/register" />
+        </RadzenPanelMenu>
+    }
+</div>

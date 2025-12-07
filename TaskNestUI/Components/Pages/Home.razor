@@ -1,0 +1,127 @@
+﻿@page "/"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>TaskNest</PageTitle>
+
+<div style="min-height: calc(100vh - 64px); display:flex; flex-direction:column;">
+    <!-- Hero -->
+    <section style="flex:0 0 auto; padding:60px 20px; background: radial-gradient(1100px 600px at 20% -10%, #eef2ff 10%, transparent 40%), linear-gradient(180deg, #ffffff, #f8fafc);">
+        <div class="container" style="max-width:1100px; margin:0 auto;">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 style="font-size:2.5rem; line-height:1.2; margin:0;">
+                        Organize work. Collaborate faster. Deliver together.
+                    </h1>
+                    <p class="text-muted" style="margin-top:16px; font-size:1.1rem;">
+                        TaskNest brings your boards, tasks, and teams into a single elegant workspace powered by real-time collaboration.
+                    </p>
+                    <div style="display:flex; gap:12px; margin-top:24px;">
+                        <RadzenButton Text="Get Started" Icon="rocket_launch" ButtonStyle="ButtonStyle.Primary" Click="@PrimaryAction" />
+                        <RadzenButton Text="Explore Boards" Icon="view_module" ButtonStyle="ButtonStyle.Light" Click="@(() => NavigationManager.NavigateTo("/boards"))" />
+                    </div>
+                    <div class="text-muted" style="margin-top:12px; font-size:0.9rem;">
+                        No credit card required. Free to start.
+                    </div>
+                </div>
+                <div class="col-md-5" style="display:flex; align-items:center; justify-content:center; margin-top:24px;">
+                    <RadzenCard Style="width:100%; max-width:420px; border-radius:16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08);">
+                        <div style="padding:16px; display:flex; align-items:center; gap:10px;">
+                            <RadzenIcon Icon="dashboard" Style="font-size:28px; color:#4f46e5;" />
+                            <h4 style="margin:0;">At a glance</h4>
+                        </div>
+                        <div style="padding:0 16px 16px 16px; color:#64748b;">
+                            Build boards, columns, and tasks. Track progress with statistics. Collaborate with comments and notifications.
+                        </div>
+                        <div style="padding:16px; background:#f8fafc;">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                                <RadzenCard Style="text-align:center;">
+                                    <div style="font-weight:600; font-size:1.1rem;">Boards</div>
+                                    <small class="text-muted">Organize projects</small>
+                                </RadzenCard>
+                                <RadzenCard Style="text-align:center;">
+                                    <div style="font-weight:600; font-size:1.1rem;">Tasks</div>
+                                    <small class="text-muted">Stay on track</small>
+                                </RadzenCard>
+                                <RadzenCard Style="text-align:center;">
+                                    <div style="font-weight:600; font-size:1.1rem;">Comments</div>
+                                    <small class="text-muted">Collaborate</small>
+                                </RadzenCard>
+                                <RadzenCard Style="text-align:center;">
+                                    <div style="font-weight:600; font-size:1.1rem;">Insights</div>
+                                    <small class="text-muted">See progress</small>
+                                </RadzenCard>
+                            </div>
+                        </div>
+                    </RadzenCard>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section style="flex: 0 0 auto; padding:48px 20px; background:#ffffff;">
+        <div class="container" style="max-width:1100px; margin:0 auto;">
+            <div class="row">
+                <div class="col-md-4">
+                    <RadzenCard>
+                        <div style="display:flex; gap:10px;">
+                            <RadzenIcon Icon="bolt" Style="color:#16a34a; font-size:28px;" />
+                            <div>
+                                <h5 style="margin:0;">Fast and Fluid</h5>
+                                <p class="text-muted" style="margin:6px 0 0 0;">Radzen-powered UI optimized for clarity and speed.</p>
+                            </div>
+                        </div>
+                    </RadzenCard>
+                </div>
+                <div class="col-md-4">
+                    <RadzenCard>
+                        <div style="display:flex; gap:10px;">
+                            <RadzenIcon Icon="lock" Style="color:#2563eb; font-size:28px;" />
+                            <div>
+                                <h5 style="margin:0;">Secure by Design</h5>
+                                <p class="text-muted" style="margin:6px 0 0 0;">JWT-based auth safeguards your boards and data.</p>
+                            </div>
+                        </div>
+                    </RadzenCard>
+                </div>
+                <div class="col-md-4">
+                    <RadzenCard>
+                        <div style="display:flex; gap:10px;">
+                            <RadzenIcon Icon="notifications" Style="color:#f59e0b; font-size:28px;" />
+                            <div>
+                                <h5 style="margin:0;">Real-time Updates</h5>
+                                <p class="text-muted" style="margin:6px 0 0 0;">SignalR notifications keep your team aligned.</p>
+                            </div>
+                        </div>
+                    </RadzenCard>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="flex:1 0 auto; padding:48px 20px; background:linear-gradient(180deg, #f8fafc, #ffffff);">
+        <div class="container" style="max-width:900px; margin:0 auto; text-align:center;">
+            <h3>Ready to boost your productivity?</h3>
+            <p class="text-muted">Create a board and start organizing tasks in seconds.</p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <RadzenButton Text="Go to Dashboard" Icon="dashboard" ButtonStyle="ButtonStyle.Primary" Click="@(() => NavigationManager.NavigateTo("/dashboard"))" />
+                <RadzenButton Text="Create a Board" Icon="add" ButtonStyle="ButtonStyle.Success" Click="@(() => NavigationManager.NavigateTo("/boards"))" />
+            </div>
+        </div>
+    </section>
+</div>
+
+@code {
+    private async Task PrimaryAction()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var isAuth = authState.User?.Identity?.IsAuthenticated ?? false;
+        if (isAuth)
+            NavigationManager.NavigateTo("/dashboard");
+        else
+            NavigationManager.NavigateTo("/register");
+    }
+}

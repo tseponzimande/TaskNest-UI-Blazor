@@ -1,0 +1,47 @@
+﻿@page "/register"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<div style="min-height:80vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#f8fafc,#ffffff); padding:20px;">
+    <RadzenCard Style="width:100%; max-width:560px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border-radius:16px; overflow:hidden;">
+        <div style="display:flex; gap:24px; align-items:center; padding:24px 24px 0 24px;">
+            <div style="flex:0 0 64px; height:64px; display:flex; align-items:center; justify-content:center; background:#ecfeff; border-radius:12px;">
+                <RadzenIcon Icon="person_add" Style="font-size:32px; color:#0891b2;" />
+            </div>
+            <div style="flex:1;">
+                <h2 style="margin:0;">Create your account</h2>
+                <p class="text-muted" style="margin:4px 0 0 0;">Join TaskNest to manage tasks with your team</p>
+            </div>
+        </div>
+
+        <div style="padding:24px;">
+            <RadzenTemplateForm Data="@registerModel" Submit="@(async (DTOs.RegisterDto model) => await UserRegister(model))">
+                <div class="mb-3">
+                    <RadzenLabel Text="Email" />
+                    <RadzenTextBox @bind-Value="registerModel.Email" Placeholder="you@example.com" Style="width:100%; height: 4rem; border-radius: 2rem;" />
+                </div>
+
+                <div class="mb-3">
+                    <RadzenLabel Text="Password" />
+                    <RadzenPassword @bind-Value="registerModel.Password" Placeholder="••••••••" Style="width:100%; height: 4rem; border-radius: 2rem;" />
+                </div>
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <RadzenAlert Text="@errorMessage" Severity="AlertSeverity.Error" />
+                }
+
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Create Account" Disabled="@isLoading"
+                              Icon="person_add" ButtonStyle="ButtonStyle.Primary" Style="width:100%; height: 5rem; border-radius: 4rem;" />
+
+                <div class="d-flex justify-content-center" style="margin-top:12px;">
+                    <span class="text-muted" style="margin-right:6px;">Already have an account?</span>
+                    <RadzenLink Path="/login" Text="Sign in" />
+                </div>
+            </RadzenTemplateForm>
+        </div>
+
+        <div style="padding:16px; background:#f8fafc; text-align:center; color:#64748b;">
+            We’ll send you occasional updates. You can unsubscribe at any time.
+        </div>
+    </RadzenCard>
+</div>

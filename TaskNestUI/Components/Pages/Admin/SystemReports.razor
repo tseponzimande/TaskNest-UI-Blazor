@@ -1,0 +1,46 @@
+﻿@page "/admin/reports"
+@attribute [Authorize(Roles = "Admin")]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>System Reports</PageTitle>
+
+<RadzenCard>
+    <h3>System Reports</h3>
+    <p class="text-muted">Comprehensive system analytics and reporting</p>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <RadzenCard>
+                <h5>User Activity Report</h5>
+                <p>Track user engagement and activity patterns</p>
+                <RadzenButton Text="Generate Report" Icon="assessment" ButtonStyle="ButtonStyle.Primary" />
+            </RadzenCard>
+        </div>
+
+        <div class="col-md-6">
+            <RadzenCard>
+                <h5>Task Completion Report</h5>
+                <p>Analyze task completion rates and trends</p>
+                <RadzenButton Text="Generate Report" Icon="bar_chart" ButtonStyle="ButtonStyle.Info" />
+            </RadzenCard>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <RadzenCard>
+                <h5>Board Usage Statistics</h5>
+                <p>View board creation and usage metrics</p>
+                <RadzenButton Text="Generate Report" Icon="pie_chart" ButtonStyle="ButtonStyle.Success" />
+            </RadzenCard>
+        </div>
+
+        <div class="col-md-6">
+            <RadzenCard>
+                <h5>Export All Data</h5>
+                <p>Download complete system data export</p>
+                <RadzenButton Text="Export CSV" Icon="download" ButtonStyle="ButtonStyle.Secondary" />
+            </RadzenCard>
+        </div>
+    </div>
+</RadzenCard>

@@ -1,0 +1,153 @@
+﻿@page "/boards/{BoardId:guid}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IAsyncDisposable
+
+<PageTitle>@boardName</PageTitle>
+
+<!-- Debug: SignalR Connection Status -->
+<div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 12px; border-radius: 4px; font-size: 12px; z-index: 9999;">
+    SignalR: @(SignalRService.IsConnected ? "🟢 Connected" : "🔴 Disconnected")
+</div>
+
+@if (isLoading)
+{
+    <RadzenProgressBar Mode="@ProgressBarMode.Indeterminate" />
+}
+else if (board == null)
+{
+    <RadzenCard>
+        <h3>Board not found</h3>
+        <RadzenButton Text="Back to Boards" Click="@(() => NavigationManager.NavigateTo("/boards"))" />
+    </RadzenCard>
+}
+else
+{
+    <RadzenCard>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <RadzenButton Icon="arrow_back" ButtonStyle="ButtonStyle.Light" Click="@(() => NavigationManager.NavigateTo("/boards"))" 
+                              Style="margin-right:10px" title="Back to Boards" />
+                <RadzenHeading Size="HeadingSize.H3" Text="@board.Name" Style="display:inline-block; margin:0;" />
+            </div>
+            <div>
+                <RadzenButton Text="Manage Members" Icon="group" Click="@OpenManageMembersDialog" ButtonStyle="ButtonStyle.Info" Style="margin-right:10px" />
+                <RadzenButton Text="Add Column" Icon="add" Click="@OpenAddColumnDialog" ButtonStyle="ButtonStyle.Success" Style="margin-right:10px" />
+                <RadzenButton Text="Board Settings" Icon="settings" Click="@OpenBoardSettings" ButtonStyle="ButtonStyle.Secondary" />
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(board.Description))
+        {
+            <p class="text-muted">@board.Description</p>
+        }
+    </RadzenCard>
+
+    <br />
+
+    @if (columns != null && columns.Any() && tasks.Any())
+    {
+        <TaskStatistics Tasks="@tasks" Columns="@columns" />
+    }
+
+    @if (columns != null && columns.Any())
+    {
+        <TaskSearchFilter Columns="@columns" OnFilterChange="@FilterChange" FilteredCount="@filteredTasks.Count()" />
+    }
+
+    @if (columns == null || !columns.Any())
+    {
+        <RadzenCard Style="text-align:center; padding:2rem;">
+            <RadzenIcon Icon="view_week" Style="font-size:3rem; color:#ccc;" />
+            <h4>No columns yet</h4>
+            <p>Add your first column to organize tasks</p>
+            <RadzenButton Text="Add Column" Icon="add" Click="@OpenAddColumnDialog" ButtonStyle="ButtonStyle.Success" />
+        </RadzenCard>
+    }
+    else
+    {
+        <div style="display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem;"
+             @ondrop:preventDefault
+             @ondragover:preventDefault>
+            @foreach (var column in orderedColumns)
+            {
+                var columnStyle = GetColumnStyle(column);
+                <div style="@columnStyle"
+                     draggable="true"
+                     @ondragstart="@(e => ColumnDragStart(e, column))"
+                     @ondragend="@ColumnDragEnd"
+                     @ondrop="@(e => ColumnDrop(e, column))"
+                     @ondragover="@(e => ColumnDragOver(e))"
+                     @ondragenter="@(e => ColumnDragEnter(e, column))"
+                     @ondragleave="@(e => ColumnDragLeave(e, column))"
+                     @ondragover:preventDefault>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 style="margin: 0; cursor: move;">
+                            <RadzenIcon Icon="drag_indicator" Style="vertical-align: middle; color: #999;" />
+                            @column.Name
+                        </h5>
+                        <div>
+                            <RadzenButton Size="ButtonSize.Small" Icon="edit" Click="@(() => OpenEditColumnDialog(column))"
+                                          ButtonStyle="ButtonStyle.Light" Style="margin-right:4px" title="Edit Column" />
+                            <RadzenButton Size="ButtonSize.Small" Icon="delete" Click="@(() => ConfirmDeleteColumn(column))"
+                                          ButtonStyle="ButtonStyle.Danger" title="Delete Column" />
+                        </div>
+                    </div>
+
+                    <RadzenButton Text="Add Task" Icon="add" Click="@(() => OpenAddTaskDialog(column.Id))"
+                                  ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" Style="width:100%; margin-bottom:1rem;" />
+
+                    <div @ondrop="@(e => TaskDrop(e, column.Id))"
+                         @ondragover:preventDefault
+                         @ondragenter:preventDefault
+                         style="min-height: 100px;">
+                        @{
+                            var columnTasks = filteredTasks.Where(t => t.ColumnId == column.Id).OrderBy(t => t.Position);
+                        }
+
+                        @if (!columnTasks.Any())
+                        {
+                            <div style="text-align:center; padding:2rem; color:#999;">
+                                <RadzenIcon Icon="inbox" Style="font-size:2rem;" />
+                                <p style="margin:0.5rem 0 0 0; font-size:0.9rem;">No tasks</p>
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var task in columnTasks)
+                            {
+                                var taskStyle = GetTaskStyle(task);
+                                <RadzenCard Style="@taskStyle" 
+                                            draggable="true"
+                                            @ondragstart="@(e => TaskDragStart(e, task))"
+                                            @ondragend="@TaskDragEnd"
+                                            @onclick="@(() => OpenTaskDetailsDialog(task))">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div style="flex:1;">
+                                            <strong>@task.Title</strong>
+                                            @if (!string.IsNullOrEmpty(task.Description))
+                                            {
+                                                <p style="margin:0.5rem 0 0 0; font-size:0.9rem; color:#666;">
+                                                    @(task.Description.Length > 60 ? task.Description.Substring(0, 60) + "..." : task.Description)
+                                                </p>
+                                            }
+                                            @if (task.DueDate.HasValue)
+                                            {
+                                                <small style="color: @(task.DueDate.Value < DateTime.Now ? "red" : "#999");">
+                                                    Due: @task.DueDate.Value.ToString("MMM dd, yyyy")
+                                                </small>
+                                            }
+                                        </div>
+                                        <RadzenButton Size="ButtonSize.ExtraSmall" Icon="more_vert" ButtonStyle="ButtonStyle.Light"
+                                                      Click="@((args) => ShowTaskMenu(args, task))"
+                                                      @onclick:stopPropagation="true" />
+                                    </div>
+                                </RadzenCard>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}

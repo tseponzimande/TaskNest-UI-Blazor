@@ -1,0 +1,54 @@
+﻿@implements IAsyncDisposable
+
+<div style="position:relative; display:inline-block;">
+    <RadzenButton Icon="notifications" ButtonStyle="ButtonStyle.Light" Click="@ToggleNotifications" />
+    @if (unreadCount > 0)
+    {
+        <RadzenBadge Text="@unreadCount.ToString()" BadgeStyle="BadgeStyle.Danger" Style="position:absolute; top:-5px; right:-5px;" />
+    }
+</div>
+
+@if (showNotifications)
+{
+    <div style="position:absolute; right:20px; top:60px; width:350px; max-height:400px;
+                background:white; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.1);
+                z-index:1000; overflow:hidden;">
+        <div style="padding:1rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+            <h5 style="margin:0;">Notifications</h5>
+            @if (notifications.Any())
+            {
+                <RadzenButton Text="Clear All" Size="ButtonSize.ExtraSmall"
+                              ButtonStyle="ButtonStyle.Light" Click="@ClearAll" />
+            }
+        </div>
+
+        <div style="max-height:300px; overflow-y:auto;">
+            @if (!notifications.Any())
+            {
+                <div style="padding:2rem; text-align:center; color:#999;">
+                    <RadzenIcon Icon="notifications_none" Style="font-size:3rem;" />
+                    <p>No notifications</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var notification in notifications.OrderByDescending(n => n.Timestamp))
+                {
+                    <div style="padding:1rem; border-bottom:1px solid #f0f0f0; cursor:pointer;
+                                background:@(notification.IsRead ? "white" : "#f0f8ff")"
+                         @onclick="@(() => MarkAsRead(notification))">
+                        <div style="display:flex; align-items:start;">
+                            <RadzenIcon Icon="@GetNotificationIcon(notification.Type)"
+                                        Style="@($"margin-right:10px; color:{GetNotificationColor(notification.Type)};")" />
+                            <div style="flex:1;">
+                                <p style="margin:0; font-size:0.9rem;">@notification.Message</p>
+                                <small style="color:#999;">@GetRelativeTime(notification.Timestamp)</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+

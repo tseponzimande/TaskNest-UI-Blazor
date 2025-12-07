@@ -1,0 +1,53 @@
+﻿<RadzenCard Style="margin-bottom:1rem;">
+    <div class="row">
+        <div class="col-md-4">
+            <label class="form-label">Search</label>
+            <RadzenTextBox @bind-Value="SearchText" Placeholder="Search tasks..." Style="width:100%" @oninput="@((args) => OnSearchChanged(args.Value?.ToString()))" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Column</label>
+            <RadzenDropDown @bind-Value="SelectedColumnId" Data="@Columns"
+                            TextProperty="Name" ValueProperty="Id"
+                            Style="width:100%" Placeholder="All Columns"
+                            AllowClear="true"
+                            Change="@OnFilterChanged" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Due Date</label>
+            <RadzenDropDown @bind-Value="SelectedDueDateFilter" Data="@dueDateFilters"
+                            Style="width:100%" Placeholder="AllDates"
+                            AllowClear="true" Change="@OnFilterChanged" />
+        </div>
+
+        <div class="col-md-2" style="display:flex; align-items:flex-end;">
+            <RadzenButton Text="Clear" Icon="clear" Click="@ClearFilters" ButtonStyle="ButtonStyle.Light" Style="width:100%;" />
+        </div>
+    </div>
+
+    @if (HasActiveFilters)
+    {
+        <div style="margin-top:1rem;">
+            <small class="text-muted">
+                <strong>Active Filters:</strong>
+                @if (!string.IsNullOrWhiteSpace(SearchText))
+                {
+                    <RadzenBadge Text=@($"Search: {SearchText}") BadgeStyle="BadgeStyle.Info"
+                                 Style="margin-right:5px;" />
+                }
+                @if (SelectedColumnId.HasValue)
+                {
+                    <RadzenBadge Text=@($"Column: {Columns.FirstOrDefault(c => c.Id == SelectedColumnId)?.Name}")
+                                 BadgeStyle="BadgeStyle.Info" Style="margin-right:5px;" />
+                }
+                @if (!string.IsNullOrWhiteSpace(SelectedDueDateFilter))
+                {
+                    <RadzenBadge Text=@($"Due: {SelectedDueDateFilter}")
+                                 BadgeStyle="BadgeStyle.Info" Style="margin-right:5px;" />
+                }
+                <span style="margin-left:10px;">(@FilteredCount tasks found)</span>
+            </small>
+        </div>
+    }
+</RadzenCard>

@@ -1,0 +1,31 @@
+﻿@using TaskNestUI.DTOs
+
+<EditForm Model="model" OnValidSubmit="@Submit">
+    <RadzenFieldset Style="padding:16px;">
+        <h4>Create Task</h4>
+
+        <div class="mb-3">
+            <label class="form-label">Task Title *</label>
+            <RadzenTextBox @bind-Value="model.Title" Placeholder="Enter task title" Style="width:100%" />
+            @if (showTitleError)
+            {
+                <div class="text-danger">Task title is required.</div>
+            }
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <RadzenTextArea @bind-Value="model.Description" Placeholder="Enter task description (optional)" Rows="4" Style="width:100%" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Due Date</label>
+            <RadzenDatePicker @bind-Value="model.DueDate" Style="width:100%" ShowTime="false" DateFormat="MM/dd/yyyy" Placeholder="Select due date (optional)" />
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <RadzenButton Text="Cancel" ButtonStyle="ButtonStyle.Secondary" Click="@Cancel" Style="margin-right:8px;" />
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Create" Icon="add" />
+        </div>
+    </RadzenFieldset>
+</EditForm>

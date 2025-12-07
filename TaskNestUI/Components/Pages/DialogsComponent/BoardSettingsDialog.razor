@@ -1,0 +1,27 @@
+﻿<EditForm Model="model" OnValidSubmit="@Submit">
+    <RadzenFieldset Style="padding:16px; min-width:520px;">
+        <h4>Board Settings</h4>
+
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <RadzenTextBox @bind-Value="model.Name" Placeholder="Board name" Style="width:100%" />
+            @if (showNameError)
+            {
+                <div class="text-danger">Name is required.</div>
+            }
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <RadzenTextArea @bind-Value="model.Description" Placeholder="What is this board about?"
+                            Rows="4" Style="width:100%" />
+        </div>
+
+        <RadzenAlert Text="@errorMessage" Severity="AlertSeverity.Error" Visible="@(!string.IsNullOrWhiteSpace(errorMessage))" />
+
+        <div class="d-flex justify-content-end">
+            <RadzenButton Text="Cancel" ButtonStyle="ButtonStyle.Secondary" Click="@Cancel" Style="margin-right:8px;" />
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save Changes" Icon="save" />
+        </div>
+    </RadzenFieldset>
+</EditForm>

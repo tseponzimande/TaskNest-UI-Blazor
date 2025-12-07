@@ -1,0 +1,47 @@
+﻿@page "/boards"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+
+<RadzenCard>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Boards</h3>
+        <RadzenButton Text="New Board" Click="@OpenCreateDialog" Icon="add" ButtonStyle="ButtonStyle.Primary" />
+    </div>
+
+    <br />
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="@ProgressBarMode.Indeterminate" />
+    }
+    else if (!boards.Any())
+    {
+        <RadzenCard Style="text-align:center; padding:2rem;">
+            <RadzenIcon Icon="view_module" Style="font-size:3rem; color:#ccc;" />
+            <h4>No boards found</h4>
+            <p>Create your first board to get started!</p>
+        </RadzenCard>
+    }
+    else
+    {
+        <RadzenDataGrid Data="@boards" TItem="BoardDto" Responsive="true" ShowPagingSummary="true" AllowFiltering="true" AllowColumnResize="true"
+                        FilterMode="FilterMode.Simple" PageSize="10" AllowPaging="true" AllowSorting="true" ColumnWidth="300px">
+            <Columns>
+                <RadzenDataGridColumn TItem="BoardDto" Property="Name" Title="Name" Width="200px" />
+                <RadzenDataGridColumn TItem="BoardDto" Property="Description" Title="Description" />
+                <RadzenDataGridColumn TItem="BoardDto" Title="Actions" Width="180px" Sortable="false" Filterable="false">
+                    <Template Context="board">
+                        <RadzenButton Size="ButtonSize.Small" Icon="launch" Click="@(()=>OpenBoard(board.Id))"
+                                      ButtonStyle="ButtonStyle.Primary" Style="margin-right:6px" title="Open Board" />
+                        <RadzenButton Size="ButtonSize.Small" Icon="edit" Click="@(()=>OpenEditDialog(board))"
+                                      ButtonStyle="ButtonStyle.Light" Style="margin-right:6px" title="Edit Board" />
+                        <RadzenButton Size="ButtonSize.Small" Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                                      Click="@(()=>ConfirmDelete(board))" title="Delete Board" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+
+</RadzenCard>

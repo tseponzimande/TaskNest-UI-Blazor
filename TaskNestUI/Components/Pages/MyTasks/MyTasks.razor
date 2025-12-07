@@ -1,0 +1,63 @@
+﻿@page "/my-tasks"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>My Tasks</PageTitle>
+
+<RadzenCard>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>My Tasks</h3>
+        <div style="display:flex; gap:8px;">
+            <RadzenTextBox @bind-Value="search" Placeholder="Search title/description..." Style="min-width:260px" />
+            <RadzenDropDown @bind-Value="selectedDue"
+                            Data="dueFilters"
+                            Placeholder="All Due"
+                            AllowClear="true"
+                            Style="width:160px" />
+            <RadzenButton Icon="refresh" Text="Refresh" ButtonStyle="ButtonStyle.Light" Click="@LoadData" />
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="@ProgressBarMode.Indeterminate" />
+    }
+    else if (!tasks.Any())
+    {
+        <RadzenCard Style="text-align:center; padding:2rem;">
+            <RadzenIcon Icon="task" Style="font-size:3rem; color:#ccc;" />
+            <h4>No tasks found</h4>
+            <p>Tasks from boards you are a member of will appear here.</p>
+        </RadzenCard>
+    }
+    else
+    {
+        <RadzenDataGrid Data="@FilteredTasks" TItem="TaskItemDto" AllowFiltering="false" AllowSorting="true"
+                        AllowPaging="true" PageSize="10" ShowPagingSummary="true" ColumnWidth="220px">
+            <Columns>
+                <RadzenDataGridColumn TItem="TaskItemDto" Property="Title" Title="Title" Width="260px" />
+                <RadzenDataGridColumn TItem="TaskItemDto" Property="Description" Title="Description" />
+                <RadzenDataGridColumn TItem="TaskItemDto" Property="CreatedAt" Title="Created" Width="160px">
+                    <Template Context="t">@t.CreatedAt.ToString("MMM dd, yyyy")</Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="TaskItemDto" Property="DueDate" Title="Due" Width="160px">
+                    <Template Context="t">
+                        @if (t.DueDate.HasValue)
+                        {
+                            var late = t.DueDate.Value < DateTime.UtcNow;
+                            <span style="color:@(late ? "red" : "inherit")">@t.DueDate.Value.ToString("MMM dd, yyyy")</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">—</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="TaskItemDto" Title="Actions" Width="140px" Filterable="false" Sortable="false">
+                    <Template Context="t">
+                        <RadzenButton Size="ButtonSize.Small" Icon="launch" ButtonStyle="ButtonStyle.Primary" Click="@(() => OpenBoard(t.BoardId))" style="margin-right:6px" title="Open Board" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</RadzenCard>
