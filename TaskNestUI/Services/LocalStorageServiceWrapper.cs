@@ -28,11 +28,11 @@
             }
             catch (InvalidOperationException)
             {
-                // JS interop not available during prerendering
+                
             }
             catch (JSException)
             {
-                // JavaScript error
+                
             }
         }
 
@@ -44,11 +44,11 @@
             }
             catch (InvalidOperationException)
             {
-                // JS interop not available during prerendering
+         
             }
             catch (JSException)
             {
-                // JavaScript error
+
             }
         }
     }

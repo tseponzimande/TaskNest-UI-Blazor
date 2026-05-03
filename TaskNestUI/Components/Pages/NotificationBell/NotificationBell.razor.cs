@@ -58,7 +58,6 @@
                     notifications.Add(notification);
                     unreadCount = notifications.Count(n => !n.IsRead);
 
-                    // Show toast notification
                     NotificationService.Notify(new NotificationMessage
                     {
                         Severity = NotificationSeverity.Info,

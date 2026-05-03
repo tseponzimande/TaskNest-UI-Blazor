@@ -111,13 +111,11 @@
 
             currentUserId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            // Setup SignalR event handlers
             SignalRService.OnBoardRefreshRequested += HandleBoardRefresh;
             SignalRService.OnTaskDragStarted += HandleTaskDragStarted;
             SignalRService.OnTaskDragEnded += HandleTaskDragEnded;
             SignalRService.OnColumnReordered += HandleColumnReordered;
 
-            // Ensure SignalR is connected before loading board
             await EnsureSignalRConnection();
 
             await LoadBoardData();

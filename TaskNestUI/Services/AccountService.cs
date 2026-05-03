@@ -25,7 +25,6 @@
                     {
                         _logger.LogInformation("Token received successfully");
 
-                        // Store token and update auth state
                         await _localStorage.SetItemAsync("authToken", token);
                         if (_authStateProvider is JwtAuthenticationStateProvider jwtProvider)
                         {
@@ -90,7 +89,6 @@
         {
             try
             {
-                // Get token for authenticated request
                 var token = await _localStorage.GetItemAsync<string>("authToken");
                 var request = new HttpRequestMessage(HttpMethod.Post, "api/account/change-password")
                 {

@@ -25,7 +25,6 @@
             }
             catch (InvalidOperationException ex)
             {
-                // JS interop not available during prerendering
                 _logger.LogWarning($"Cannot access localStorage (prerendering?): {ex.Message}");
             }
             catch (Exception ex)

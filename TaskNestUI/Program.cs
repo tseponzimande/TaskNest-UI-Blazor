@@ -9,7 +9,6 @@ builder.Services
     .AddSignalRService()
     .AddRazorComponentsServices();
 
-// Add Authentication and Authorization services
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>
     {
@@ -22,7 +21,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -33,7 +31,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Add Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
 

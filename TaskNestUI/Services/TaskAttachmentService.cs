@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-
-namespace TaskNestUI.Services
+﻿namespace TaskNestUI.Services
 {
     public class TaskAttachmentService(
         HttpClient httpClient,
@@ -11,7 +9,7 @@ namespace TaskNestUI.Services
         private readonly ILogger<TaskAttachmentService> _logger = logger;
         private readonly IJSRuntime _jsRuntime = jsRuntime;
 
-        // Max file size must match API limit (10 MB)
+        
         private const long MaxFileSize = 10 * 1024 * 1024;
 
         public async Task<IEnumerable<TaskAttachmentDto>> GetAttachmentsByTaskIdAsync(Guid taskId)
@@ -46,7 +44,6 @@ namespace TaskNestUI.Services
             {
                 using var content = new MultipartFormDataContent();
 
-                // Ensure maxAllowedSize matches API limit
                 var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: MaxFileSize));
                 fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
                 content.Add(fileContent, "file", file.Name);

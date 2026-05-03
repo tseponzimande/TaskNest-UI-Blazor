@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="AuthenticationState\" />
+    <Folder Include="Components\Pages\UserManagement\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,4 @@
-﻿using TaskNestUI.DTOs;
-
-namespace TaskNestUI.Services
+﻿namespace TaskNestUI.Services
 {
     public class UserManagementService(HttpClient httpClient, ILogger<UserManagementService> logger) : IUserManagementService
     {

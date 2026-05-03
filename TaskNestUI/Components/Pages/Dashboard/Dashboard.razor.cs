@@ -108,10 +108,19 @@
         private string GetRelativeTime(DateTime dateTime)
         {
             var span = DateTime.UtcNow - dateTime;
-            if (span.TotalMinutes < 1) return "Just now";
-            if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes}m ago";
-            if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
-            if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
+
+            if (span.TotalMinutes < 1) 
+                return "Just now";
+
+            if (span.TotalMinutes < 60) 
+                return $"{(int)span.TotalMinutes}m ago";
+
+            if (span.TotalHours < 24) 
+                return $"{(int)span.TotalHours}h ago";
+
+            if (span.TotalDays < 7) 
+                return $"{(int)span.TotalDays}d ago";
+
             return dateTime.ToString("MMM dd");
         }
 

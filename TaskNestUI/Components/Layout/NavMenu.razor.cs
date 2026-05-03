@@ -69,7 +69,6 @@
                 isAuthenticated = authState.User?.Identity?.IsAuthenticated ?? false;
                 isAdmin = authState.User?.IsInRole("Admin") ?? false;
 
-                // Set dashboard path based on role
                 dashboardPath = isAdmin ? "/admin/dashboard" : "/dashboard";
 
                 if (wasAuthenticated != isAuthenticated || wasAdmin != isAdmin)

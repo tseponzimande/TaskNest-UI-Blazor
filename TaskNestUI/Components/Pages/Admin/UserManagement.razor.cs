@@ -1,6 +1,4 @@
-﻿using TaskNestUI.DTOs;
-
-namespace TaskNestUI.Components.Pages.UserManagement
+﻿namespace TaskNestUI.Components.Pages.Admin
 {
     [Authorize(Roles = "Admin")]
     public partial class UserManagement
@@ -39,7 +37,6 @@ namespace TaskNestUI.Components.Pages.UserManagement
 
         protected override async Task OnInitializedAsync()
         {
-            // Check if user is admin
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var isAdmin = authState.User.IsInRole("Admin");
 
@@ -211,10 +208,19 @@ namespace TaskNestUI.Components.Pages.UserManagement
         private string GetRelativeTime(DateTime dateTime)
         {
             var span = DateTime.UtcNow - dateTime;
-            if (span.TotalMinutes < 1) return "Just now";
-            if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes}m ago";
-            if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
-            if (span.TotalDays < 30) return $"{(int)span.TotalDays}d ago";
+
+            if (span.TotalMinutes < 1) 
+                return "Just now";
+
+            if (span.TotalMinutes < 60)
+                return $"{(int)span.TotalMinutes}m ago";
+
+            if (span.TotalHours < 24) 
+                return $"{(int)span.TotalHours}h ago";
+
+            if (span.TotalDays < 30) 
+                return $"{(int)span.TotalDays}d ago";
+
             return dateTime.ToString("MMM dd, yyyy");
         }
 

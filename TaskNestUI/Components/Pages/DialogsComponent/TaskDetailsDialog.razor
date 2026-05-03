@@ -1,6 +1,5 @@
 ﻿<RadzenTabs Style="height:600px;">
     <Tabs>
-        <!-- Details Tab -->
         <RadzenTabsItem Text="Details">
             <RadzenFieldset Style="padding:16px;">
                 @if (isEditing)
@@ -85,7 +84,6 @@
             </RadzenFieldset>
         </RadzenTabsItem>
 
-        <!-- Comments Tab -->
         <RadzenTabsItem Text="Comments">
             <RadzenFieldset Style="padding:16px; height:100%;">
                 <h4>Comments</h4>
@@ -135,12 +133,10 @@
             </RadzenFieldset>
         </RadzenTabsItem>
 
-        <!-- Attachments Tab -->
         <RadzenTabsItem Text="Attachments">
             <RadzenFieldset Style="padding:16px; height:100%;">
                 <h4>Attachments</h4>
 
-                <!-- Upload Section -->
                 <div class="mb-3">
                     <InputFile OnChange="@HandleFileSelected" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif,.zip,.rar" />
                     @if (selectedFile != null)
@@ -163,7 +159,6 @@
 
                 <hr />
 
-                <!-- Attachments List -->
                 @if (isLoadingAttachments)
                 {
                     <RadzenProgressBar Mode="@ProgressBarMode.Indeterminate" />

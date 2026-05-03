@@ -97,7 +97,6 @@
             app.UseStaticFiles();
             app.UseAntiforgery();
 
-            // Add these two lines
             app.UseAuthentication();
             app.UseAuthorization();
 

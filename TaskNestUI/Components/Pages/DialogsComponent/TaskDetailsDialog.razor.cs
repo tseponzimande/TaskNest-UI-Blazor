@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-
-namespace TaskNestUI.Components.Pages.DialogsComponent
+﻿namespace TaskNestUI.Components.Pages.DialogsComponent
 {
     public partial class TaskDetailsDialog
     {

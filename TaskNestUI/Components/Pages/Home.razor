@@ -6,7 +6,7 @@
 <PageTitle>TaskNest</PageTitle>
 
 <div style="min-height: calc(100vh - 64px); display:flex; flex-direction:column;">
-    <!-- Hero -->
+
     <section style="flex:0 0 auto; padding:60px 20px; background: radial-gradient(1100px 600px at 20% -10%, #eef2ff 10%, transparent 40%), linear-gradient(180deg, #ffffff, #f8fafc);">
         <div class="container" style="max-width:1100px; margin:0 auto;">
             <div class="row">
@@ -60,7 +60,6 @@
         </div>
     </section>
 
-    <!-- Features -->
     <section style="flex: 0 0 auto; padding:48px 20px; background:#ffffff;">
         <div class="container" style="max-width:1100px; margin:0 auto;">
             <div class="row">
@@ -101,7 +100,6 @@
         </div>
     </section>
 
-    <!-- CTA -->
     <section style="flex:1 0 auto; padding:48px 20px; background:linear-gradient(180deg, #f8fafc, #ffffff);">
         <div class="container" style="max-width:900px; margin:0 auto; text-align:center;">
             <h3>Ready to boost your productivity?</h3>
@@ -119,6 +117,7 @@
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var isAuth = authState.User?.Identity?.IsAuthenticated ?? false;
+
         if (isAuth)
             NavigationManager.NavigateTo("/dashboard");
         else

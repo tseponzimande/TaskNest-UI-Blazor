@@ -33,7 +33,6 @@
         protected override void OnInitialized()
         {
             model.BoardId = BoardId;
-            // convert empty Guid to null
             model.ColumnId = ColumnId == Guid.Empty ? null : ColumnId;
             model.CreatedAt = DateTime.UtcNow;
         }

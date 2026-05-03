@@ -1,10 +1,4 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text.Json;
-
-namespace TaskNestUI.Services
+﻿namespace TaskNestUI.Services
 {
     public class JwtAuthenticationStateProvider(ILocalStorageService localStorage, HttpClient httpClient, ILogger<JwtAuthenticationStateProvider> logger) : AuthenticationStateProvider
     {

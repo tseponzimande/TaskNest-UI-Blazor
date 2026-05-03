@@ -1,10 +1,11 @@
 ﻿@page "/boards/{BoardId:guid}"
+@using TaskNestUI.Components.Pages.DialogsComponent.SearchFilter
+@using TaskNestUI.Components.Pages.DialogsComponent.TaskStatistics
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @implements IAsyncDisposable
 
 <PageTitle>@boardName</PageTitle>
 
-<!-- Debug: SignalR Connection Status -->
 <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 12px; border-radius: 4px; font-size: 12px; z-index: 9999;">
     SignalR: @(SignalRService.IsConnected ? "🟢 Connected" : "🔴 Disconnected")
 </div>

@@ -28,7 +28,6 @@
         {
             get
             {
-                // Find the "Done" column (you might need to adjust this logic)
                 var doneColumn = Columns.FirstOrDefault(c => c.Name.Contains("Done", StringComparison.OrdinalIgnoreCase) || c.Name.Contains("Complete", StringComparison.OrdinalIgnoreCase));
 
                 return doneColumn != null ? Tasks.Count(t => t.ColumnId == doneColumn.Id) : 0;
